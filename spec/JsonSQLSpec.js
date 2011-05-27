@@ -2,7 +2,7 @@ describe("JsonSQL", function() {
 	var table;
 	
 	beforeEach(function() {
-		table = new JsonSQL();
+		table = new JsonSQL([]);
 	});
 	
 	it("should be defined", function() {
@@ -28,4 +28,13 @@ describe("JsonSQL", function() {
 	it("should have a where method", function() {
 		expect(table.where).toBeDefined();
 	});
+	
+	it("should have a private pass method", function() {
+		expect(table.pass_).toBeDefined();
+	});
+	
+	it("should be able to insert documents", function() {
+		table.insert({"name": "test"});
+		expect(table.data_).toEqual([{"name": "test"}]);
+	})
 });

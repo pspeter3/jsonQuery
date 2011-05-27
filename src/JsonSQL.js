@@ -23,5 +23,15 @@ function JsonSQL(data) {
  * @return {Array} The result set for all the records that match the conditions
  */
 JsonSQL.prototype.where = function(conditions) {
-	var test;
-} 
+	
+}
+
+/**
+ * Inserts an object
+ *
+ * @this {JsonSQL}
+ * @param {object}
+ */
+JsonSQL.prototype.insert = function(row) {
+	this.data_.push(row);
+}
