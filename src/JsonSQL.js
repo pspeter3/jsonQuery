@@ -14,3 +14,14 @@
 function JsonSQL(data) {
 	/** @private */ this.data_ = data;
 }
+
+/**
+ * Searches for all records given the hash of conditions
+ *
+ * @this {JsonSQL}
+ * @param {object} A hash of conditions
+ * @return {Array} The result set for all the records that match the conditions
+ */
+JsonSQL.prototype.where = function(conditions) {
+	var test;
+} 
