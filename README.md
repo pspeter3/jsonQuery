@@ -1,8 +1,10 @@
 JsonSQL
 =======
 
-The JsonSQL project was started by Trent Richardson and continued to be worked on by Brian Guarraci 
-and myself. The project is designed to provide standard querying language support to JSON data.
+JsonSQL was inspired by Trent Richardson's implementation. The key differences between this project
+and his are that this project provides CRUD methods and uses an Object Oriented paradigm. If you
+are looking for a SQL query string based solution, please check out 
+[http://trentrichardson.com/jsonsql/](http://trentrichardson.com/jsonsql/)
 
 Installation
 ------------
@@ -14,4 +16,5 @@ Testing
 -------
 
 The JsonSQL project uses Jasmine, 
-[http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/), to test the code
+[http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/), to test the code. To run
+the tests, open Spec
