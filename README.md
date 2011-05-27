@@ -1,11 +1,10 @@
 jsonSQL
 =======
 
-The jsonSQL project was started by Trent Richardson and continued to be worked
-on by Brian Guarraci. The project is designed to provide standard querying
-language support to JSON data
+The JsonSQL project was started by Trent Richardson and continued to be worked on by Brian Guarraci and myself. The project is designed to provide standard querying language support to JSON data.
 
-Query Support
--------------
+Installation
+------------
 
-The language supports SELECT, INSERT, UPDATE, and DELETE.
+To install the script into your code simply include the jsonsql-0.2.min.js into your project and
+create tables using the JsonSQL object.
