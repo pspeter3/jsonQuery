@@ -1,10 +1,11 @@
-JsonSQL
-=======
+JsonQuery
+=========
 
-JsonSQL was inspired by Trent Richardson's implementation. The key differences between this project
+JsonQuery was inspired by Trent Richardson's implementation. The key differences between this project
 and his are that this project provides CRUD methods and uses an Object Oriented paradigm. If you
 are looking for a SQL query string based solution, please check out 
-[http://trentrichardson.com/jsonsql/](http://trentrichardson.com/jsonsql/)
+[http://trentrichardson.com/jsonsql/](http://trentrichardson.com/jsonsql/) The JsonQuery library
+provides SQL like powers but a different method for querying.
 
 Installation
 ------------
