@@ -17,6 +17,10 @@ describe("JsonQuery", function() {
 		expect(table.insert).toBeDefined();
 	});
 	
+	it("should have an extend method", function() {
+	  expect(table.extend).toBeDefined();
+	})
+	
 	it("should have an update method", function() {
 		expect(table.update).toBeDefined();
 	});
@@ -63,6 +67,18 @@ describe("JsonQuery", function() {
 		table.insert({'name': 'test', 'age': 0});
 		table.insert({'name': 'fail', 'age': 0});
 		table.insert({'name': 'test', 'age': 1});
-		expect(table.where({'name':'test', 'age': 1})).toEqual([{'name':'test', 'age': 1}])
+		expect(table.where({'name':'test', 'age': 1})).toEqual(
+		  [{'name':'test', 'age': 1}])
+	});
+	
+	it("should be able to do basic condition queries", function() {
+	  table.insert({'age': 5})
+	});
+	
+	it("should be able to do a basic OR query", function() {
+	  table.insert({'name': 'a', 'age': 3});
+		table.insert({'name': 'b', 'age': 5});
+		expect(table.where({'name':{'$lt':4,'$gt':'4'}})).toEqual(
+		  [{'name': 'a', 'age': 3}, {'name': 'b', 'age': 5}]);
 	});
 });

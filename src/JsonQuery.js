@@ -63,7 +63,7 @@ JsonQuery.prototype.all = function() {
  */
 JsonQuery.prototype.check_ = function(index, conditions) {
 	for(field in conditions) {
-		// Perform short circuit and
+		// Perform short circuit AND
 		if(!this.test_(index, field, conditions[field])) {
 			return false;
 		}
@@ -107,7 +107,7 @@ JsonQuery.prototype.test_ = function(index, field, condition) {
  */
 JsonQuery.prototype.or_ = function(value, condition) {
 	for(func in condition) {
-		// Perform short circuit or
+		// Perform short circuit OR
 		if(this.handle_(value, func, condition[func])) {
 			return true;
 		}
