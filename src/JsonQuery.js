@@ -43,6 +43,16 @@ JsonQuery.prototype.insert = function(data) {
 }
 
 /**
+ * Concats an array into the store
+ *
+ * @this {JsonQuery}
+ * @param {object} data The array to concat with the data
+ */
+JsonQuery.prototype.concat = function(data) {
+  this.data_ = this.data_.concat(data);
+}
+
+/**
  * Returns all of the data
  * 
  * @this {JsonQuery}
@@ -143,12 +153,12 @@ JsonQuery.prototype.handle_ = function(value, func, condition) {
 			return value >= condition;
 		case "$in":
 			if(condition instanceof Array) {
-				return (value in condition);
+				return (value in condition) || value == condition[-1];
 			}
 			return false;
 		case "$nin":
 			if(condition instanceof Array) {
-				return !(value in condition);
+				return !(value in condition || value == condition[-1]);
 			}
 			return false;
 		case "$match":
