@@ -63,6 +63,13 @@ JsonQuery.prototype.all = function() {
 }
 
 /**
+ * Optimizes a query for before searching
+ *
+ * @private
+ * @this {JsonQuery{
+ */
+
+/**
  * Checks to see if an object passes a test
  * 
  * @private
@@ -163,7 +170,7 @@ JsonQuery.prototype.handle_ = function(value, func, condition) {
 			return false;
 		case "$match":
 			if(value instanceof String && condition instanceof RegExp) {
-				return value.match(condition) != null;
+				return value.test(condition);
 			}
 			return false;
 		default:
