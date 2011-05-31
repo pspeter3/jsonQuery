@@ -5,27 +5,6 @@
  */
 
 /**
- * Static map of functions used by JsonQuery
- */
-JsonQuery.queries = {
-	"$lt": function(val, expect) {return val < expect;},
-	"$lte": function(val, expect) {return val <= expect;},
-	"$eq": function(val, expect) {return val === expect;},
-	"$ne": function(val, expect) {return val != expect;},
-	"$gt": function(val, expect) {return val > expect;},
-	"$gte": function(val, expect) {return val >= expect;},
-	"$range": function(val, expect) {return (val >= expect.min && val <= expect.max);},
-	"$xrange": function(val, expect) {return (val > expect.min && val < expect.max);},
-	"$in": function(val, expect) {return (val in expect);},
-	"$nin": function(val, expect) {return !(val in expect);},
-	"$match": function(val, expect) {
-		if(typeof(val) === "string") {
-			return val.match(expect) != null;
-		}
-		return false;
-	}
-}
-/**
  * Creates an instance of JsonQuery which represents a table
  * 
  * @constructor
@@ -37,6 +16,28 @@ function JsonQuery(data) {
 }
 
 /**
+ * Static map of functions used by JsonQuery
+ */
+JsonQuery.queries = {
+	"$lt": function(val, expect) {return val < expect;},
+	"$lte": function(val, expect) {return val <= expect;},
+	"$eq": function(val, expect) {return val === expect;},
+	"$ne": function(val, expect) {return val !== expect;},
+	"$gt": function(val, expect) {return val > expect;},
+	"$gte": function(val, expect) {return val >= expect;},
+	"$range": function(val, expect) {return (val >= expect.min && val <= expect.max);},
+	"$xrange": function(val, expect) {return (val > expect.min && val < expect.max);},
+	"$in": function(val, expect) {return (val.hasOwnProperty(expect));},
+	"$nin": function(val, expect) {return !(val.hasOwnProperty(expect));},
+	"$match": function(val, expect) {
+		if(typeof(val) === "string") {
+			return val.match(expect) !== null;
+		}
+		return false;
+	}
+};
+
+/**
  * Searches for all records given the hash of conditions
  *
  * @this {JsonQuery}
@@ -46,13 +47,14 @@ function JsonQuery(data) {
 JsonQuery.prototype.where = function(conditions) {
 	var resultSet = [];
 	this.sanitizeQuery_(conditions);
+	var row;
 	for(row in this.data_) {
 		if(this.check_(row, conditions)) {
 			resultSet.push(this.data_[row]);
 		}
 	}
 	return resultSet;
-}
+};
 
 /**
  * Inserts an object into the store
@@ -62,7 +64,7 @@ JsonQuery.prototype.where = function(conditions) {
  */
 JsonQuery.prototype.insert = function(data) {
 	this.data_.push(data);
-}
+};
 
 /**
  * Concats an array into the store
@@ -72,7 +74,7 @@ JsonQuery.prototype.insert = function(data) {
  */
 JsonQuery.prototype.concat = function(data) {
 	this.data_ = this.data_.concat(data);
-}
+};
 
 /**
  * Returns all of the data
@@ -82,7 +84,7 @@ JsonQuery.prototype.concat = function(data) {
  */
 JsonQuery.prototype.all = function() {
 	return this.data_;
-}
+};
 
 /**
  * Sanitizes a query for before searching
@@ -93,9 +95,11 @@ JsonQuery.prototype.all = function() {
  * @return {object} Returns the sanitized conditions
  */
 JsonQuery.prototype.sanitizeQuery_ = function(conditions) {
+	var field;
 	for(field in conditions) {
 		// Check to make sure that it's a function
 		if(typeof(conditions[field]) === "object") {
+			var i;
 			for(i in conditions[field]) {
 				// Delete non-existant functions
 				if(typeof(JsonQuery.queries[i]) === "undefined") {
@@ -128,7 +132,7 @@ JsonQuery.prototype.sanitizeQuery_ = function(conditions) {
 			}
 		}
 	}
-}
+};
 
 /**
  * Checks to see if an object passes a test
@@ -140,6 +144,7 @@ JsonQuery.prototype.sanitizeQuery_ = function(conditions) {
  * @return {boolean} Returns whether or not the object passed
  */
 JsonQuery.prototype.check_ = function(index, conditions) {
+	var field;
 	for(field in conditions) {
 		// Perform short circuit AND
 		if(!this.test_(index, field, conditions[field])) {
@@ -148,7 +153,7 @@ JsonQuery.prototype.check_ = function(index, conditions) {
 	}
 	// Return true by default
 	return true;
-}
+};
 
 /**
  * Evaluates a condition given a row index and a field
@@ -172,7 +177,7 @@ JsonQuery.prototype.test_ = function(index, field, condition) {
 	} else {
 		return false;
 	}
-}
+};
 
 /**
  * Does an OR check on a subcondition
@@ -184,6 +189,7 @@ JsonQuery.prototype.test_ = function(index, field, condition) {
  * @return {boolean} Returns whether or not the value is true
  */
 JsonQuery.prototype.or_ = function(value, condition) {
+	var func;
 	for(func in condition) {
 		// Perform short circuit OR
 		if(this.handle_(value, func, condition[func])) {
@@ -192,7 +198,7 @@ JsonQuery.prototype.or_ = function(value, condition) {
 	}
 	// Return false by default
 	return false;
-}
+};
 
 /**
  * Handles the function call
@@ -210,7 +216,7 @@ JsonQuery.prototype.handle_ = function(value, func, condition) {
 	}
 	// Return false by default
 	return false;
-}
+};
 
 /**
  * Creates a set from an array and returns a null set if the object is not an array
@@ -222,9 +228,10 @@ JsonQuery.set = function(arr) {
 	var result = {};
 	// Populate the result if the parameter is an Array
 	if(arr instanceof Array) {
+		var i;
 		for(i in arr) {
 			result[arr[i]] = true;
 		}
 	}
 	return result;
-}
+};
