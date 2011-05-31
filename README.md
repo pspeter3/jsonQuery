@@ -24,7 +24,7 @@ the nested level are computed using OR. All query functions must be nested.
 
 * **$lt**: <
 
-	data.where({age:{$lt: 30}});
+		data.where({age:{$lt: 30}});
 
 * **$lte**: <=
 * **$eq**: ==
