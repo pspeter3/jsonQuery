@@ -10,8 +10,8 @@ provides SQL like powers but a different method for querying.
 Installation
 ------------
 
-To install the script into your code simply include the jsonsql-0.2.min.js into your project and
-create tables using the JsonSQL object.
+To install the script into your code simply include the jsonQuery-0.1.min.js from bin/ into your 
+project and create tables using the JsonQuery object.
 
 Initialization
 --------------
