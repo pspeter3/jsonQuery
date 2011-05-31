@@ -2,8 +2,29 @@
  * JsonQuery
  * Author: Phips Peter [pspeter333@gmail.com]
  * Version 0.1
-/
+ */
 
+/**
+ * Static map of functions used by JsonQuery
+ */
+JsonQuery.queries = {
+	"$lt": function(val, expect) {return val < expect;},
+	"$lte": function(val, expect) {return val <= expect;},
+	"$eq": function(val, expect) {return val === expect;},
+	"$ne": function(val, expect) {return val != expect;},
+	"$gt": function(val, expect) {return val > expect;},
+	"$gte": function(val, expect) {return val >= expect;},
+	"$range": function(val, expect) {return (val >= expect.min && val <= expect.max);},
+	"$xrange": function(val, expect) {return (val > expect.min && val < expect.max);},
+	"$in": function(val, expect) {return (val in expect);},
+	"$nin": function(val, expect) {return !(val in expect);},
+	"$match": function(val, expect) {
+		if(typeof(val) === "string") {
+			return val.match(expect) != null;
+		}
+		return false;
+	}
+}
 /**
  * Creates an instance of JsonQuery which represents a table
  * 
@@ -24,6 +45,7 @@ function JsonQuery(data) {
  */
 JsonQuery.prototype.where = function(conditions) {
 	var resultSet = [];
+	this.sanitizeQuery_(conditions);
 	for(row in this.data_) {
 		if(this.check_(row, conditions)) {
 			resultSet.push(this.data_[row]);
@@ -49,7 +71,7 @@ JsonQuery.prototype.insert = function(data) {
  * @param {object} data The array to concat with the data
  */
 JsonQuery.prototype.concat = function(data) {
-  this.data_ = this.data_.concat(data);
+	this.data_ = this.data_.concat(data);
 }
 
 /**
@@ -63,11 +85,50 @@ JsonQuery.prototype.all = function() {
 }
 
 /**
- * Optimizes a query for before searching
+ * Sanitizes a query for before searching
  *
  * @private
- * @this {JsonQuery{
+ * @this {JsonQuery}
+ * @param {object} conditions The hash of conditions to be optimized
+ * @return {object} Returns the sanitized conditions
  */
+JsonQuery.prototype.sanitizeQuery_ = function(conditions) {
+	for(field in conditions) {
+		// Check to make sure that it's a function
+		if(typeof(conditions[field]) === "object") {
+			for(i in conditions[field]) {
+				// Delete non-existant functions
+				if(typeof(JsonQuery.queries[i]) === "undefined") {
+					delete conditions[field][i];
+					continue;
+				}
+				// Check specific behavior
+				if(i === "$in" || i === "$nin") {
+					// Make sure it's an array
+					if(conditions[field][i] instanceof Array) {
+						// Convert it to a set
+						conditions[field][i] = JsonQuery.set(conditions[field][i]);
+					} else {
+						delete conditions[field][i];
+						continue;
+					}
+				} else if(i === "$range" || i === "$xrange") {
+					// Delete the condition if it doesn't have a min and max
+					if(typeof(conditions[field][i].min) === "undefined" || 
+						typeof(conditions[field][i]).max === "undefined") {
+						delete conditions[field][i];
+						continue;
+					}
+				} else if(i === "$match") {
+					if(!(conditions[field][i] instanceof RegExp)) {
+						delete conditions[field][i];
+						continue;
+					}
+				}
+			}
+		}
+	}
+}
 
 /**
  * Checks to see if an object passes a test
@@ -144,36 +205,26 @@ JsonQuery.prototype.or_ = function(value, condition) {
  * @return {boolean} Returns whether or not the value is true
  */
 JsonQuery.prototype.handle_ = function(value, func, condition) {
-	// Switch on the function
-	switch(func) {
-		case "$lt":
-			return value < condition;
-		case "$lte":
-			return value <= condition;
-		case "$eq":
-			return value === condition;
-		case "$ne":
-			return value != condition;
-		case "$gt":
-			return value > condition;
-		case "$gte":
-			return value >= condition;
-		case "$in":
-			if(condition instanceof Array) {
-				return (value in condition) || value == condition[-1];
-			}
-			return false;
-		case "$nin":
-			if(condition instanceof Array) {
-				return !(value in condition || value == condition[-1]);
-			}
-			return false;
-		case "$match":
-			if(value instanceof String && condition instanceof RegExp) {
-				return value.test(condition);
-			}
-			return false;
-		default:
-			return false;
+	if(typeof(JsonQuery.queries[func]) !== "undefined") {
+		return JsonQuery.queries[func](value, condition);
 	}
+	// Return false by default
+	return false;
+}
+
+/**
+ * Creates a set from an array and returns a null set if the object is not an array
+ * 
+ * @param {array} arr The array to be turned into a set
+ * @return {object} The set to be used
+ */
+JsonQuery.set = function(arr) {
+	var result = {};
+	// Populate the result if the parameter is an Array
+	if(arr instanceof Array) {
+		for(i in arr) {
+			result[arr[i]] = true;
+		}
+	}
+	return result;
 }
