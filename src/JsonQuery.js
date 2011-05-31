@@ -27,8 +27,8 @@ JsonQuery.queries = {
 	"$gte": function(val, expect) {return val >= expect;},
 	"$range": function(val, expect) {return (val >= expect.min && val <= expect.max);},
 	"$xrange": function(val, expect) {return (val > expect.min && val < expect.max);},
-	"$in": function(val, expect) {return (val.hasOwnProperty(expect));},
-	"$nin": function(val, expect) {return !(val.hasOwnProperty(expect));},
+	"$in": function(val, expect) {return (val in expect);},
+	"$nin": function(val, expect) {return !(val in expect);},
 	"$match": function(val, expect) {
 		if(typeof(val) === "string") {
 			return val.match(expect) !== null;
