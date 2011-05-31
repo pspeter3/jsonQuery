@@ -20,6 +20,17 @@ The JsonQuery library uses MongoDB like querying syntax. Basically, a JSON Objec
 passed to the where() method. Conditions at the top level are computed using AND and conditions at
 the nested level are computed using OR. All query functions must be nested.
 
+### Functions
+
+* **$lt**: <
+
+	data.where({age:{$lt: 30}});
+
+* **$lte**: <=
+* **$eq**: ==
+* **$ne**: !=
+* 
+
 Testing
 -------
 
