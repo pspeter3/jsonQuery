@@ -75,14 +75,23 @@ inner function are assumed to be using equals.
 
 **$match**: Tests to see if a string matches a RegExp
 
-	data.match(name: {$match: /test/i});
+	data.where(name: {$match: /test/i});
 
+### Examples
+
+	// SELECT * FROM data WHERE name = 'test' AND age >= 20 AND age <= 30; 
+	data.where(name: 'test', age: {$range: {min: 20, max: 30}});
+	// SELECT * FROM data WHERE age = 10 OR age = 20 OR age = 30;
+	data.where(age: {$in: [10, 20, 30]});
+	// SELECT * FROM data WHERE age < 10 OR age > 90;
+	data.where(age: {$lt: 10, $gt: 90});
+	
 Testing
 -------
 
 The JsonSQL project uses Jasmine, 
 [http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/), to test the code. To run
-the tests, open SpecRunner.html. Add more specs by editing spec/JsonQuerySpec.js
+the tests, open SpecRunner.html. Add more specs by editing spec/jsonQuerySpec.js
 
 Future Stuff
 ------------
