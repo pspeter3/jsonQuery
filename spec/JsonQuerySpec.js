@@ -73,6 +73,8 @@ describe("JsonQuery", function() {
 	it("should be able to insert documents", function() {
 		table.insert({name:'test'});
 		expect(table.all()).toEqual([{name:'test'}]);
+		table.insert([{name:'a'},{name:'b'}]);
+		expect(table.all()).toEqual([{name:'test'},{name:'a'},{name:'b'}]);
 	});
 
 	it("should be able to do a simple query", function() {

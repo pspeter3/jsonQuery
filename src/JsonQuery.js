@@ -63,7 +63,11 @@ JsonQuery.prototype.where = function(conditions) {
  * @param {object} data The object to insert
  */
 JsonQuery.prototype.insert = function(data) {
-	this.data_.push(data);
+	if(data instanceof Array) {
+		this.data_ = this.data_.concat(data);
+	} else {
+		this.data_.push(data);
+	}
 };
 
 /**
