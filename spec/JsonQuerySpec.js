@@ -23,10 +23,6 @@ describe("JsonQuery", function() {
 		expect(table.insert).toBeDefined();
 	});
 
-	it("should have an concat method", function() {
-		expect(table.concat).toBeDefined();
-	})
-
 	it("should have a where method", function() {
 		expect(table.where).toBeDefined();
 	});
@@ -85,12 +81,12 @@ describe("JsonQuery", function() {
 	});
 
 	it("should be able to do a basic AND query", function() {
-		table.concat([{name:'test',age: 0},{name:'fail',age: 0},{name:'test',age:1}]);
+		table.insert([{name:'test',age: 0},{name:'fail',age: 0},{name:'test',age:1}]);
 		expect(table.where({name:'test',age: 1})).toEqual([{name:'test',age:1}])
 	});
 
 	it("should be able to do basic condition queries", function() {
-		table.concat([{age: 1},{age: 2},{age:4},{age:8}]);
+		table.insert([{age: 1},{age: 2},{age:4},{age:8}]);
 		expect(table.where({age:{$lt:2}})).toEqual([{age:1}]);
 		expect(table.where({age:{$lte:2}})).toEqual([{age:1},{age:2}]);
 		expect(table.where({age:{$gt:4}})).toEqual([{age:8}]);
@@ -99,24 +95,60 @@ describe("JsonQuery", function() {
 	});
 
 	it("should be able to do $in and $nin queries", function() {
-		table.concat([{age: 1},{age: 2},{age:4},{age:8}]);
+		table.insert([{age: 1},{age: 2},{age:4},{age:8}]);
 		expect(table.where({age:{$in:[1,2]}})).toEqual([{age:1},{age:2}]);
 		expect(table.where({age:{$nin:[1,2]}})).toEqual([{age:4},{age:8}]);
 	});
 	
 	it("should be able to do $range and $xrange queries", function() {
-		table.concat([{age: 1},{age: 2},{age:4},{age:8}]);
+		table.insert([{age: 1},{age: 2},{age:4},{age:8}]);
 		expect(table.where({age:{$range:{min:1,max:2}}})).toEqual([{age:1},{age:2}]);
 		expect(table.where({age:{$xrange:{min:1,max:4}}})).toEqual([{age:2}]);
 	});
 	
 	it("should be able to match regular expression", function() {
-		table.concat([{name:'test'},{name:'fail'}]);
+		table.insert([{name:'test'},{name:'fail'}]);
 		expect(table.where({name:{$match:/e/i}})).toEqual([{name:'test'}]);
 	});
 
 	it("should be able to do a basic OR query", function() {
-		table.concat([{name:'a',age: 3},{name:'b',age:5}]);
+		table.insert([{name:'a',age: 3},{name:'b',age:5}]);
 		expect(table.where({age:{$lt:4,$gt:4}})).toEqual([{name:'a',age:3},{name:'b',age: 5}]);
+	});
+	
+	it("should have a map/reduce method", function() {
+		expect(table.mapreduce).toBeDefined();
+	});
+	
+	it("should be able to do a sum via map/reduce", function() {
+		table.insert([{age: 1},{age: 2},{age:4},{age:8}]);
+		var m = function(obj) {
+			return obj['age'];
+		}
+		var r = function(arr) {
+			var sum = 0;
+			var i;
+			for(i in arr) {
+				sum += arr[i];
+			}
+			return sum;
+		}
+		expect(table.mapreduce(m, r)).toEqual(15);
+	});
+	
+	it("should be able to do map/reduce with a query", function() {
+		table.insert([{age: 1},{age: 2},{age:4},{age:8}]);
+		var m = function(obj) {
+			return obj['age'];
+		}
+		var r = function(arr) {
+			var sum = 0;
+			var i;
+			for(i in arr) {
+				sum += arr[i];
+			}
+			return sum;
+		}
+		expect(table.mapreduce(m,r,{age:{$lte:2}})).toEqual(3);
 	});
 });
