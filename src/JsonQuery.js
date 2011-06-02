@@ -45,43 +45,18 @@ JsonQuery.queries = {
  * @param {objbect} options A hash of options
  * @return {array} The result set for all the records that match the conditions
  */
-JsonQuery.prototype.where = function(conditions, options) {
+JsonQuery.prototype.where = function(conditions) {
 	var resultSet = [];
 	this.sanitizeQuery_(conditions);
-	// Check to make sure there are any conditions
-	var empty = JsonQuery.isEmpty(conditions);
-	// See if there are fields to slice
-	var slice = (typeof(options) !== "undefined" && typeof(options['fields']) !== "undefined" && 
-	!(JsonQuery.isEmpty(options['fields'])));
-	// See if there is a sort option
-	var sort = (typeof(options) !== "undefined" && typeof(options['fields']) !== "undefined");
-	// Iterate if the conditions aren't empty or fields are required
-	if(!empty || slice) {
+	if(!(JsonQuery.isEmpty(conditions))) {
 		var row;
 		for(row in this.data_) {
-			if(empty || this.check_(row, conditions)) {
-				// Slice the object if need be
-				if(slice) {
-					var field;
-					var o = {};
-					for(field in options['fields']) {
-						if(typeof(this.data_[row][options['fields'][field]]) !== "undefined") {
-							o[options['fields'][field]] = this.data_[row][options['fields'][field]];
-						}
-					}
-					if(!(JsonQuery.isEmpty(o))) {
-						resultSet.push(o);
-					}
-				} else {
-					resultSet.push(this.data_[row]);
-				}
+			if(this.check_(row, conditions)) {
+				resultSet.push(this.data_[row]);
 			}
 		}
 	} else {
 		resultSet = resultSet.concat(this.data_);
-	}
-	if(sort) {
-		
 	}
 	// Return the result set if it does not need to be sorted
 	return resultSet;
@@ -105,11 +80,11 @@ JsonQuery.prototype.insert = function(data) {
  * Returns all of the data
  * 
  * @this {JsonQuery}
- * @param {object} options The options to be used
+ * @param {array} fields The fields to be used
  * @return {object} All of the data
  */
-JsonQuery.prototype.all = function(options) {
-	return this.where({}, options);
+JsonQuery.prototype.all = function() {
+	return this.where({});
 };
 
 /**
@@ -120,10 +95,10 @@ JsonQuery.prototype.all = function(options) {
  * @param {object} conditions The optional conditions to use to narrow the data
  * @return {object} The result of the reduce function
  */
-JsonQuery.prototype.mapreduce = function(map, reduce, conditions, options) {
+JsonQuery.prototype.mapreduce = function(map, reduce, conditions) {
 	var collection; // The collection to iterate over
 	if(typeof(conditions) !== "undefined") {
-		collection = this.where(conditions, options);
+		collection = this.where(conditions);
 	} else {
 		collection = this.data_;
 	}
@@ -134,7 +109,6 @@ JsonQuery.prototype.mapreduce = function(map, reduce, conditions, options) {
 	}
 	// Return the result of reduce
 	return reduce(temp);
-	
 } 
 
 /**
@@ -273,6 +247,8 @@ JsonQuery.prototype.handle_ = function(value, func, condition) {
 	return false;
 };
 
+
+
 /**
  * Creates a set from an array and returns a null set if the object is not an array
  * 
@@ -294,6 +270,7 @@ JsonQuery.set = function(arr) {
 /**
  * Checks to see if an object is empty
  *
+ * @private
  * @param {object} obj The object to check
  * @return {boolean} Whether or not the object is empty
  */
