@@ -15,6 +15,12 @@ describe("JsonQuery", function() {
 		expect(JsonQuery.set(0)).toEqual({});
 	});
 	
+	it("should have a static isEmpty method", function() {
+		expect(JsonQuery.isEmpty).toBeDefined();
+		expect(JsonQuery.isEmpty({})).toBeTruthy();
+		expect(JsonQuery.isEmpty({name:'fail'})).toBeFalsy();
+	});
+	
 	it("should have a static map of queries", function() {
 		expect(JsonQuery.queries).toBeDefined();
 	});
@@ -125,7 +131,7 @@ describe("JsonQuery", function() {
 	
 	it("should be able to reduce the fields", function() {
 		table.insert([{name:'test',age: 0},{name:'fail',age: 0},{name:'test',age:1}]);
-		expect(table.all({fields:[age]})).toEqual([{age:0},{age:0},{age:1}]);
+		expect(table.all({fields:['age']})).toEqual([{age:0},{age:0},{age:1}]);
 	});
 	
 	it("should have a map/reduce method", function() {
