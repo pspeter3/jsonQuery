@@ -71,16 +71,6 @@ JsonQuery.prototype.insert = function(data) {
 };
 
 /**
- * Concats an array into the store
- *
- * @this {JsonQuery}
- * @param {object} data The array to concat with the data
- */
-JsonQuery.prototype.concat = function(data) {
-	this.data_ = this.data_.concat(data);
-};
-
-/**
  * Returns all of the data
  * 
  * @this {JsonQuery}
@@ -89,6 +79,31 @@ JsonQuery.prototype.concat = function(data) {
 JsonQuery.prototype.all = function() {
 	return this.data_;
 };
+
+/**
+ * Performs map/reduce on the data
+ * @this {JsonQuery}
+ * @param {function} map The map function to be run
+ * @param {function} reduce The reduce function to be run
+ * @param {object} conditions The optional conditions to use to narrow the data
+ * @return {object} The result of the reduce function
+ */
+JsonQuery.prototype.mapreduce = function(map, reduce, conditions) {
+	var collection; // The collection to iterate over
+	if(typeof(conditions) !== "undefined") {
+		collection = this.where(conditions);
+	} else {
+		collection = this.data_;
+	}
+	var temp = []; // The temporary collection to push the map into
+	var i; // Iteration variable
+	for(i in collection) {
+		temp.push(map(collection[i]));
+	}
+	// Return the result of reduce
+	return reduce(temp);
+	
+} 
 
 /**
  * Sanitizes a query for before searching

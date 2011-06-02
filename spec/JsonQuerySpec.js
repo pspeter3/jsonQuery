@@ -118,6 +118,16 @@ describe("JsonQuery", function() {
 		expect(table.where({age:{$lt:4,$gt:4}})).toEqual([{name:'a',age:3},{name:'b',age: 5}]);
 	});
 	
+	it("should be able to sort", function() {
+		table.insert([{age: 1},{age:4},{age:8},{age: 2}]);
+		expect(table.all({sort:{age:1}})).toEqual([{age: 1},{age: 2},{age:4},{age:8}]);
+	});
+	
+	it("should be able to reduce the fields", function() {
+		table.insert([{name:'test',age: 0},{name:'fail',age: 0},{name:'test',age:1}]);
+		expect(table.all({fields:[age]})).toEqual([{age:0},{age:0},{age:1}]);
+	});
+	
 	it("should have a map/reduce method", function() {
 		expect(table.mapreduce).toBeDefined();
 	});
