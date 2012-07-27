@@ -128,6 +128,3 @@ Future Stuff
 ------------
 
 * Modify this to work with Backbone in order to filter collections
-* Updating records
-* Indexing
-* Sorting
