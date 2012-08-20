@@ -128,3 +128,4 @@ Future Stuff
 ------------
 
 * Modify this to work with Backbone in order to filter collections
+* Add an index function
