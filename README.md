@@ -113,7 +113,7 @@ Testing
 -------
 
 The JsonSQL project uses Jasmine, 
-[http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/), to test the code. To run
+[https://jasmine.github.io/](https://jasmine.github.io/), to test the code. To run
 the tests, open SpecRunner.html. Add more specs by editing spec/jsonQuerySpec.js
 
 Change Log
